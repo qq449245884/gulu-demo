@@ -173,8 +173,7 @@
         <p>99</p>
         <p>100</p>
       </g-scroll>
-      <div id="test" draggable="true"
-        style="height:100px; width:100px;border:1px solid red;position:absolute; top:0;left:0"></div>
+      <div id="test" class="test"></div>
   </div>
 </template>
 <script>
@@ -270,18 +269,44 @@ export default {
     let test = document.querySelector('#test')
     let startPosition
     let endPosition
-    test.addEventListener('dragstart', (e) => {
-      let {screenX: x, screenY: y} = e
-      startPosition = [x, y]
+    let isMoving = false
+    let translateX = 0
+    let translateY = 0
+    // test.addEventListener('dragstart', (e) => {
+    //   let {screenX: x, screenY: y} = e
+    //   startPosition = [x, y]
+    //   setTimeout(() => {
+    //     test.classList.add('hide')
+    //   }, 1)
+    // })
+    // test.addEventListener('dragend', (e) => {
+    //   let {screenX: x, screenY: y} = e
+    //   endPosition = [x, y]
+    //   let deltaX = endPosition[0] - startPosition[0]
+    //   let deltaY = endPosition[1] - startPosition[1]
+    //   let {left, top} = window.getComputedStyle(test)
+
+    //   test.style.left = parseInt(left) + deltaX + 'px'
+    //   test.style.top = parseInt(top) + deltaY + 'px'
+    //   test.classList.remove('hide')
+    // })
+    test.addEventListener('mousedown', e => {
+      isMoving = true
+      let { screenX, screenY } = e
+      startPosition = {x: screenX, y: screenY}
     })
-    test.addEventListener('dragend', (e) => {
-      let {screenX: x, screenY: y} = e
-      endPosition = [x, y]
-      let deltaX = endPosition[0] - startPosition[0]
-      let deltaY = endPosition[1] - startPosition[1]
-      test.style.left = parseInt(test.style.left) + deltaX + 'px'
-      test.style.top = parseInt(test.style.top) + deltaY + 'px'
-      
+    document.addEventListener('mousemove', e => {
+      if (!isMoving) return
+      let { screenX, screenY } = e
+      endPosition = {x: screenX, y: screenY}
+      let delta = {x: endPosition.x - startPosition.x, y: endPosition.y - startPosition.y}
+      translateX = parseInt(translateX) + delta.x
+      translateY = parseInt(translateY) + delta.y
+      startPosition = endPosition
+      test.style.transform = `translate(0px, ${translateY}px)`
+    })
+    test.addEventListener('mouseup', e => {
+      isMoving = false
     })
   },
   created () {
@@ -349,6 +374,12 @@ export default {
   .child{
     border: 1px solid red;
   }
+  .test{
+    height:100px; width:100px;
+    border:1px solid red;
+    position:absolute; top:0;left:0
+  }
+  .hide{
+    transform: translateX(-99999px)
+  }
 </style>
-
- 

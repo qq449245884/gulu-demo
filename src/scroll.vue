@@ -62,6 +62,12 @@ export default {
     },
     onMouseLeave () {
       this.scrollBarVisible = false
+    },
+    onDragStart () {
+      console.log('start')
+    },
+    onDragEnd () {
+      console.log('end')
     }
   }
 }
